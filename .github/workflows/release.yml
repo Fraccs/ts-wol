@@ -1,0 +1,67 @@
+name: release
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  detect-version:
+    name: Detect new version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '5.0.x'
+      - name: Setup git
+        run: |
+          git config user.email "$(git log -1 --pretty=format:%ae)"
+          git config user.name "$(git log -1 --pretty=format:%an)"
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.13
+        with:
+          versionSpec: '5.x'
+      - name: Determine Version
+        id: execute
+        uses: gittools/actions/gitversion/execute@v0.9.13
+    outputs:
+      newVersion: ${{ steps.execute.outputs.majorMinorPatch }}
+
+  bump-package:
+    name: Bump package version
+    runs-on: ubuntu-latest
+    needs: detect-version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Setup git
+        run: |
+          git config user.email "$(git log -1 --pretty=format:%ae)"
+          git config user.name "$(git log -1 --pretty=format:%an)"
+      - name: Bump version
+        run: |
+          git tag v${{ needs.detect-version.outputs.newVersion }}
+          npm --no-git-tag-version version ${{ needs.detect-version.outputs.newVersion }}
+          git add .
+          git commit -m "bump: ${{ needs.detect-version.outputs.newVersion }}"
+          git push
+          git push --tags
+
+  release-gh:
+    name: Release on GitHub
+    runs-on: ubuntu-latest
+    needs: [detect-version, bump-package]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release on GitHub
+        run: |
+          gh release create v${{ needs.detect-version.outputs.newVersion }} -t v${{ needs.detect-version.outputs.newVersion }} --target main
+        env:
+          GH_TOKEN: ${{ github.TOKEN }}
