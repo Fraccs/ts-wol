@@ -1,0 +1,25 @@
+{
+  "name": "wol",
+  "version": "0.0.0",
+  "description": "Wake-on-lan client written in TypeScript.",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fraccs/wol.git"
+  },
+  "keywords": [
+    "typescript",
+    "client",
+    "wake-on-lan",
+    "wol"
+  ],
+  "author": "Aliprandi Francesco",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Fraccs/wol/issues"
+  },
+  "homepage": "https://github.com/Fraccs/wol#readme"
+}
