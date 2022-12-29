@@ -64,4 +64,4 @@ jobs:
         run: |
           gh release create v${{ needs.detect-version.outputs.newVersion }} -t v${{ needs.detect-version.outputs.newVersion }} --target main
         env:
-          GH_TOKEN: ${{ github.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
