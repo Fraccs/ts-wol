@@ -1,13 +1,43 @@
 import { createSocket } from 'dgram'
 
-const main = () => {
-  return
+const main = (macAddress: string) => {
+  const DEST_ADDR = '255.255.255.255'
+  const DEST_PORT = 9
+
+  const magicPacket = createMagicPacket(macAddress)
+  const client = createSocket('udp4') // Creating an IPv4 UDP socket
+
+  // Broadcasting the Wake-On-Lan `Magic Packet` on port 9
+  client.send(magicPacket, 0, magicPacket.length, DEST_PORT, DEST_ADDR, err => {
+    if(err) {
+      console.error(err.message)
+    }
+    else {
+      console.log('The awake signal was sent')
+    }
+
+    client.close()
+  })
+
+  client.once('listening', () => {
+    console.log('The socket was successfully bootstrapped')
+    client.setBroadcast(true)
+  })
+
+  client.on('error', err => {
+    console.error(err.message)
+    client.close()
+  })
+
+  client.on('close', () => {
+    console.log('The socket was closed')
+  })
 }
 
 /**
  * verifyMacAddress
- * @param {[string]} macAddress The mac address to verify
- * @returns {[boolean]} Returns wether the macAddress was verified or not
+ * @param {string} macAddress The mac address to verify
+ * @returns {boolean} Returns wether the macAddress was verified or not
 */
 const verifyMacAddress = (macAddress: string): boolean => {
   if(!/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})|([0-9a-fA-F]{4}\\.[0-9a-fA-F]{4}\\.[0-9a-fA-F]{4})$/.test(macAddress)) {
@@ -19,10 +49,10 @@ const verifyMacAddress = (macAddress: string): boolean => {
 
 /**
  * createMagicPacket
- * @param {[string]} macAddress The mac address of the machine to Wake-Up
+ * @param {string} macAddress The mac address of the machine to Wake-Up
  * @throws Throws an Error if the provided mac address is invalid
  * @throws Throws an Error if the parsing of the magic packet fails
- * @returns {[Buffer]} Returns a Buffer object containing the wol-datagram payload
+ * @returns {Buffer} Returns a Buffer object containing the wol-datagram payload
 */
 const createMagicPacket = (macAddress: string): Buffer => {
   if(!verifyMacAddress(macAddress)) {
@@ -49,4 +79,4 @@ const createMagicPacket = (macAddress: string): Buffer => {
   return magicPacket
 }
 
-main()
+main('5c:b9:01:3f:b2:2d')
