@@ -35,7 +35,7 @@ npx ts-wol@latest
 
 ## Usage
 
-> The program only accepts one parameter which is the `macAddress` of the makine to wake-up.
+> The program only accepts one parameter which is the `macAddress` of the machine to wake-up.
 
 ### If installed with npm -g
 
