@@ -1,4 +1,5 @@
 import { createSocket } from 'dgram'
+import logger from './logger'
 
 const main = (macAddress: string) => {
   const DEST_ADDR = '255.255.255.255'
@@ -10,27 +11,27 @@ const main = (macAddress: string) => {
   // Broadcasting the Wake-On-Lan `Magic Packet` on port 9
   client.send(magicPacket, 0, magicPacket.length, DEST_PORT, DEST_ADDR, err => {
     if(err) {
-      console.error(err.message)
+      logger.error(err.message)
     }
     else {
-      console.log('The awake signal was sent')
+      logger.log('The awake signal was sent')
     }
 
     client.close()
   })
 
   client.once('listening', () => {
-    console.log('The socket was successfully bootstrapped')
+    logger.log('The socket was successfully bootstrapped')
     client.setBroadcast(true)
   })
 
   client.on('error', err => {
-    console.error(err.message)
+    logger.error(err.message)
     client.close()
   })
 
   client.on('close', () => {
-    console.log('The socket was closed')
+    logger.log('The socket was closed')
   })
 }
 
@@ -72,6 +73,7 @@ const createMagicPacket = (macAddress: string): Buffer => {
     throw new Error('An error occurred while parsing the magic packet')
   }
 
+  // Creating the `Magic Packet` (Hex Buffer)
   const magicPacket = Buffer.from(parsedMagicPacketPayload
     .map(strByte => parseInt(strByte, 16))
   )
