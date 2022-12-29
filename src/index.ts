@@ -1,7 +1,13 @@
+import { program } from 'commander'
 import { createSocket } from 'dgram'
 import logger from './logger'
 
-const main = (macAddress: string) => {
+/**
+ * wol
+ * @description Tries to awaken the specified machine (specified by its macAddress) broadcasting a `Magic Packet`
+ * @param {string} macAddress The mac address of the machine to Wake-Up
+ */
+const wol = (macAddress: string) => {
   const DEST_ADDR = '255.255.255.255'
   const DEST_PORT = 9
 
@@ -81,4 +87,24 @@ const createMagicPacket = (macAddress: string): Buffer => {
   return magicPacket
 }
 
-main('5c:b9:01:3f:b2:2d')
+/**
+ * main
+ * @description Entrypoint
+ */
+(() => {
+  program
+    .name('ts-wol')
+    .description('Wake-on-lan client written in TypeScript')
+    .argument('macAddress')
+
+  program.parse()
+
+  const [macAddress] = program.args
+
+  if(!(typeof(macAddress) === 'string')) {
+    logger.error('Please provide a mac address')
+    return
+  }
+
+  wol(macAddress)
+})()
