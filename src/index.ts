@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from 'commander'
 import { createSocket } from 'dgram'
 import logger from './logger'
