@@ -1,6 +1,6 @@
 {
   "name": "ts-wol",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Wake-on-lan client written in TypeScript.",
   "main": "src/index.ts",
   "bin": {
