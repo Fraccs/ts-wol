@@ -11,7 +11,16 @@ const wol = (macAddress: string) => {
   const DEST_ADDR = '255.255.255.255'
   const DEST_PORT = 9
 
-  const magicPacket = createMagicPacket(macAddress)
+  let magicPacket: Buffer
+
+  try {
+    magicPacket = createMagicPacket(macAddress)
+  }
+  catch(e) {
+    logger.error(String(e))
+    return
+  }
+
   const client = createSocket('udp4') // Creating an IPv4 UDP socket
 
   // Broadcasting the Wake-On-Lan `Magic Packet` on port 9
