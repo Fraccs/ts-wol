@@ -30,5 +30,5 @@ ts-wol <macAddress>
 ## Or execute directly with `npx`
 
 ```
-npx ts-wol <macAddress>
+npx ts-wol@latest <macAddress>
 ```
