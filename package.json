@@ -1,13 +1,13 @@
 {
   "name": "ts-wol",
-  "version": "0.5.9",
+  "version": "0.5.12",
   "description": "Wake-on-lan client written in TypeScript.",
   "main": "src/index.ts",
   "bin": {
     "ts-wol": "build/index.js"
   },
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build && chmod +x ./src/scripts/shebangify.sh && ./src/scripts/shebangify.sh",
     "clean": "tsc --build --clean",
     "lint": "eslint --ext .ts .",
     "test": "echo \"Error: no test specified\" && exit 1"
